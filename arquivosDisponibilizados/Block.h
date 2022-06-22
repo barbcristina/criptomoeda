@@ -17,12 +17,13 @@ class Transaction{
 };
 
 class Block{
-    public:
+    private:
     int pos;
     int prevHash;
     int criador;
     int proofWork;
-    int nTransacoes;
+
+    public:
 
     Transaction *inicio = NULL;
     Transaction *fim = NULL;

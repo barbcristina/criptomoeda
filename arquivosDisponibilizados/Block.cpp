@@ -167,14 +167,23 @@ void Block::create() {
 	inicio = fim = NULL;
 }
 
-Block::Block(const Block &other) {
-	create(); //Crie um vetor vazio
-	*this = other; 
+Block & Block::operator=(const Block &other) {
+	if(this==&other) 
+   return *this; 
+   destroy();
+	clear();
+
+   Transaction *ptr = other.inicio;
+   while(ptr){
+      addTransaction(ptr->a, ptr->b, ptr->valor, ptr->taxa);
+      ptr = ptr->next;
+   }
+   return *this;
 }
 
-Block & Block::operator=(const Block &other) {
-	if(this==&other) return *this; 
-	clear();
+Block::Block(const Block &other) {
+	create();
+	*this = other; 
 }
 
 //destroy com recursividade
