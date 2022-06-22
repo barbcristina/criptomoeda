@@ -25,7 +25,6 @@ int main() {
 		//numero de linhas com dados de transacoes
 		std::cin >> n;
 		//para criacao do vetor
-		bloco->getQtdTransacoes(n);
 	
 		//cin para dados das transacoes
 		for(int i = 0; i < n; i++){
@@ -52,7 +51,6 @@ int main() {
 			Block *bloco = new Block(pos,prevHash,criador);
 
 			std::cin >> n;
-			bloco->getQtdTransacoes(n);
 
 			for(int i = 0; i < n; i++){
 			std::cin >> a >> b >> valor >> taxa;

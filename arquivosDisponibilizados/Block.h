@@ -43,11 +43,17 @@ class Block{
 
     int getProofWork();
 
-    void getQtdTransacoes(int qtd);
+    void create();
+
+    //Construtor de copia
+	Block(const Block &);
+	Block & operator=(const Block &other);
+
+    void clear();
 
     void verbose();
 
-    void destroy(Transaction *ptr);
+    void destroy(const Transaction *ptr);
 
     void destroy();
 

@@ -13,14 +13,18 @@ void Block::addTransaction(int _a, int _b, int valor1, int taxa1){
     }
  }
 
-//usada para saber a dimensao do vetor
- void Block::getQtdTransacoes(int qtd){
-      nTransacoes = qtd;
- }
-
  int Block::getHash(){
+   int j = 1;
+   Transaction *elems = inicio;
+   //conta quantas transações existem
+   while(elems){
+      elems = elems->next;
+      j++;
+   }
+   delete elems;
+
    //cria um vetor com exatamente a quantidade de elementos necessarias, varre todos os dados do bloco e chama calcula
-   int *v = new int[4+(nTransacoes*4)];
+   int *v = new int[4+(j*4)];
    int i = 3;
    v[0] = pos;
    v[1] = prevHash;
@@ -42,6 +46,7 @@ void Block::addTransaction(int _a, int _b, int valor1, int taxa1){
     SHA256 aux;
     int hash = aux.calcula(v, i+1);
     delete [] v;
+    delete ptr;
     return hash;
  }
 
@@ -116,7 +121,16 @@ int Block::getProofWork(){
 
 //funcao para o modo verbose, responsavel por montar o array com todos os dados do meu bloco e imprimi-lo junto com o hash binario
 void Block::verbose(){
-   int *v = new int[4+(nTransacoes*4)];
+   int j = 1;
+   Transaction *elems = inicio;
+   //conta quantas transações existem
+   while(elems){
+      elems = elems->next;
+      j++;
+   }
+   delete elems;
+
+   int *v = new int[4+(j*4)];
    int i = 3;
    v[0] = pos;
    v[1] = prevHash;
@@ -135,16 +149,36 @@ void Block::verbose(){
    }
       v[i] = proofWork;
 
-   for(int j = 0; j <= i; j++)
-   std::cout << v[j] << " ";
+   for(int k = 0; k <= i; k++)
+   std::cout << v[k] << " ";
    std::cout << std::endl;
    std::cout << hashBinario() << std::endl;
    std::cout << std::endl;
+   delete ptr;
    delete []v;
 }
 
+void Block::clear() {
+	destroy();
+	create();
+}
+
+void Block::create() {
+	inicio = fim = NULL;
+}
+
+Block::Block(const Block &other) {
+	create(); //Crie um vetor vazio
+	*this = other; 
+}
+
+Block & Block::operator=(const Block &other) {
+	if(this==&other) return *this; 
+	clear();
+}
+
 //destroy com recursividade
-void Block::destroy(Transaction *ptr){
+void Block::destroy(const Transaction *ptr){
    if(ptr==NULL) return;
     destroy(ptr->next);
     delete ptr;
