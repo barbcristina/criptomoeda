@@ -47,6 +47,10 @@ class Block{
 
     void verbose();
 
+    void destroy(Transaction *ptr);
+
+    void destroy();
+
     ~Block();
 
     Block *anterior = NULL;

@@ -65,6 +65,7 @@ int main() {
 		std::cout << bloco->hashBinario() << std::endl;
 
 		delete bloco;
+
 	}
 
 }

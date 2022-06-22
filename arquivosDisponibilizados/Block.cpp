@@ -20,7 +20,7 @@ void Block::addTransaction(int _a, int _b, int valor1, int taxa1){
 
  int Block::getHash(){
    //cria um vetor com exatamente a quantidade de elementos necessarias, varre todos os dados do bloco e chama calcula
-   int *v = new int[3+(nTransacoes*4)];
+   int *v = new int[4+(nTransacoes*4)];
    int i = 3;
    v[0] = pos;
    v[1] = prevHash;
@@ -116,7 +116,7 @@ int Block::getProofWork(){
 
 //funcao para o modo verbose, responsavel por montar o array com todos os dados do meu bloco e imprimi-lo junto com o hash binario
 void Block::verbose(){
-   int *v = new int[3+(nTransacoes*4)];
+   int *v = new int[4+(nTransacoes*4)];
    int i = 3;
    v[0] = pos;
    v[1] = prevHash;
@@ -143,13 +143,19 @@ void Block::verbose(){
    delete []v;
 }
 
-//destrutor
- Block::~Block(){
-   Transaction *aux = inicio;
-	while(aux!=NULL){
-		delete aux;
-		aux = aux->next;
-   }
+//destroy com recursividade
+void Block::destroy(Transaction *ptr){
+   if(ptr==NULL) return;
+    destroy(ptr->next);
+    delete ptr;
+}
+
+void Block::destroy(){
+   destroy(inicio);
  }
+
+//destrutor
+Block::~Block() { destroy(); };
+
 
 
