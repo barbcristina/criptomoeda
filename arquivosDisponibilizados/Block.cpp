@@ -24,7 +24,7 @@ void Block::addTransaction(int _a, int _b, int valor1, int taxa1){
    delete elems;
 
    //cria um vetor com exatamente a quantidade de elementos necessarias, varre todos os dados do bloco e chama calcula
-   int *v = new int[4+(j*4)];
+   int *v = new int[3+(j*4)];
    int i = 3;
    v[0] = pos;
    v[1] = prevHash;
@@ -130,7 +130,7 @@ void Block::verbose(){
    }
    delete elems;
 
-   int *v = new int[4+(j*4)];
+   int *v = new int[3+(j*4)];
    int i = 3;
    v[0] = pos;
    v[1] = prevHash;

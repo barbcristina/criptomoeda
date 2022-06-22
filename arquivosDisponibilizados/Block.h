@@ -44,15 +44,15 @@ class Block{
 
     int getProofWork();
 
+    void verbose();
+
     void create();
 
-    //Construtor de copia
 	Block(const Block &);
+
 	Block & operator=(const Block &other);
 
     void clear();
-
-    void verbose();
 
     void destroy(const Transaction *ptr);
 
