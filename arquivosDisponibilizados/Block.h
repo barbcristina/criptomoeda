@@ -3,23 +3,19 @@
 
 #include "SHA256.h"
 #include <string>
+#include "Transaction.h"
+#include "Blockchain.h"
+//#include "imprimeTransacoes.h"
 
-class Transaction{
-    public:
-
-    Transaction(const int origem, const int destino, const int _valor, const int _taxa): a(origem), b(destino), valor(_valor), taxa(_taxa), next(NULL) {}
-    int a;
-    int b;
-    int valor;
-    int taxa;
-
-    Transaction *next;
-};
+class Transaction;
 
 class Block{
+    friend class Transaction;
+    friend class Blockchain;
+
     private:
     int pos;
-    int prevHash;
+    int prevHash ;
     int criador;
     int proofWork;
 
@@ -60,8 +56,9 @@ class Block{
 
     ~Block();
 
-    Block *anterior = NULL;
-    Block *next = NULL;
+    Block *prox;
+    Block *ant;
+
 };
 
 #endif

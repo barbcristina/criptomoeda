@@ -14,7 +14,7 @@ void Block::addTransaction(int _a, int _b, int valor1, int taxa1){
  }
 
  int Block::getHash(){
-   int j = 1;
+   int j = 0;
    Transaction *elems = inicio;
    //conta quantas transações existem
    while(elems){
@@ -24,7 +24,7 @@ void Block::addTransaction(int _a, int _b, int valor1, int taxa1){
    delete elems;
 
    //cria um vetor com exatamente a quantidade de elementos necessarias, varre todos os dados do bloco e chama calcula
-   int *v = new int[3+(j*4)];
+   int *v = new int[4+(j*4)];
    int i = 3;
    v[0] = pos;
    v[1] = prevHash;
@@ -43,6 +43,7 @@ void Block::addTransaction(int _a, int _b, int valor1, int taxa1){
    }
 
     v[i] = proofWork;
+
     SHA256 aux;
     int hash = aux.calcula(v, i+1);
     delete [] v;
@@ -121,7 +122,7 @@ int Block::getProofWork(){
 
 //funcao para o modo verbose, responsavel por montar o array com todos os dados do meu bloco e imprimi-lo junto com o hash binario
 void Block::verbose(){
-   int j = 1;
+   int j = 0;
    Transaction *elems = inicio;
    //conta quantas transações existem
    while(elems){
@@ -130,7 +131,7 @@ void Block::verbose(){
    }
    delete elems;
 
-   int *v = new int[3+(j*4)];
+   int *v = new int[4+(j*4)];
    int i = 3;
    v[0] = pos;
    v[1] = prevHash;
@@ -163,16 +164,16 @@ void Block::clear() {
 	create();
 }
 
-void Block::create() {
-	inicio = fim = NULL;
-}
-
 Block & Block::operator=(const Block &other) {
 	if(this==&other) 
    return *this; 
    destroy();
 	clear();
 
+   pos = other.pos;
+   prevHash = other.prevHash;
+   criador = other.criador;
+   proofWork = other.proofWork;
    Transaction *ptr = other.inicio;
    while(ptr){
       addTransaction(ptr->a, ptr->b, ptr->valor, ptr->taxa);
@@ -183,7 +184,11 @@ Block & Block::operator=(const Block &other) {
 
 Block::Block(const Block &other) {
 	create();
-	*this = other; 
+	*this = other;
+}
+
+void Block::create() {
+	inicio = fim = NULL;
 }
 
 //destroy com recursividade
