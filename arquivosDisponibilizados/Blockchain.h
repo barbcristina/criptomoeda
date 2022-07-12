@@ -2,7 +2,6 @@
 #define Blockchain_H
 
 #include "Block.h"
-//#include "imprimeTransacoes.h"
 #include "Transaction.h"
 
 class Block;

@@ -1,10 +1,12 @@
 #ifndef Transaction_H
 #define Transaction_H
+
 #include "Block.h"
 #include "Blockchain.h"
 //#include "imprimeTransacoes.h"
 
 class Block;
+class Blockchain;
 
 class Transaction{
     friend class Block;

@@ -78,15 +78,14 @@ int main() {
 			int maiorant = 0;
 			int m = 0;
 			transacoes t[n];
-			transacoes aux[n];
-			transacoes melhores[mx];
 			for(int i = 0; i<n; i++){
 				std::cin >> t[i].origem;
 				std::cin >> t[i].destino;
 				std::cin >> t[i].valores;
 				std::cin >> t[i].taxas;
 			}
-			b.imprime();	
+			b.imprime();
+			delete[] vec;	
 		} 
 	}
 

@@ -2,30 +2,26 @@
 #include "Block.h"
 #include <iostream>
 
-void Blockchain::criaBloco(int n, int mx, int min, transacoes *t){
-    transacoes aux[n];
-	transacoes melhores[mx];
+Blockchain::Blockchain(){
+    minerador = 0;
+}
 
-    for(int i = 0; i<n; i++){
-		aux[i].origem = t[i].origem;
-		aux[i].destino = t[i].destino;
-		aux[i].valores = t[i].valores;
-		aux[i].taxas = t[i].taxas;
-	}
+void Blockchain::criaBloco(int n, int mx, int min, transacoes *t){
+	transacoes melhores[mx];
 
     for(int i = 0; i < mx; i++){
 		int maior = 0;
 		int pos = 0;
 
 		for(int j = 0; j < n; j++){
-			if(aux[j].taxas > maior){
-				maior = aux[j].taxas;
+			if(t[j].taxas > maior){
+				maior = t[j].taxas;
 				pos = j;
 				}
 			}
 	
-			melhores[i] = aux[pos];
-			aux[pos].taxas = -1;
+			melhores[i] = t[pos];
+			t[pos].taxas = -1;
 		}
 
 ////////////////////////////////////////////////////////////
@@ -69,14 +65,14 @@ void Blockchain::criaBloco(int n, int mx, int min, transacoes *t){
     }
 
 void Blockchain::imprime(){
-        Block *ptr = first;
-        Transaction *t = ptr->inicio;
         if(first == NULL){
             std::cout << "=====================" << std::endl;
             std::cout << std::endl;
-             std::cout << "=====================" << std::endl;
+            std::cout << "=====================" << std::endl;
         }
         else{
+            Block *ptr = first;
+            Transaction *t = ptr->inicio;
         while(!ptr){
             std::cout << "=====================" << std::endl;
             std::cout << "---------------------" << std::endl;
@@ -93,5 +89,7 @@ void Blockchain::imprime(){
             std::cout << "Hash: " << ptr->getHash() << std::endl;
             std::cout << "---------------------" << std::endl;
             }
+            delete t;
+            delete ptr;
         }
     }
