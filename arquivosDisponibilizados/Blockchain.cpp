@@ -70,10 +70,10 @@ void Blockchain::imprime(){
             std::cout << std::endl;
             std::cout << "=====================" << std::endl;
         }
-        else{
+        else if(first != NULL){
             Block *ptr = first;
-            Transaction *t = ptr->inicio;
         while(!ptr){
+            Transaction *t = ptr->inicio;
             std::cout << "=====================" << std::endl;
             std::cout << "---------------------" << std::endl;
             std::cout << "Pos: " << pos << std::endl;
@@ -88,8 +88,7 @@ void Blockchain::imprime(){
             std::cout << "Proof of work: " << ptr->getProofWork() << std::endl;
             std::cout << "Hash: " << ptr->getHash() << std::endl;
             std::cout << "---------------------" << std::endl;
+            ptr = ptr->prox;
             }
-            delete t;
-            delete ptr;
         }
     }

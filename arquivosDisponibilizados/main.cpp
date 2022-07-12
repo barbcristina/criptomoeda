@@ -84,6 +84,7 @@ int main() {
 				std::cin >> t[i].valores;
 				std::cin >> t[i].taxas;
 			}
+			b.criaBloco(n, mx, minerador, t);
 			b.imprime();
 			delete[] vec;	
 		} 
