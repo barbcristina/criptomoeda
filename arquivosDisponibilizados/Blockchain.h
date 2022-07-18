@@ -6,6 +6,7 @@
 
 class Block;
 class Transaction;
+class TIterator;
 
 struct transacoes{
 	int origem;
@@ -17,23 +18,46 @@ struct transacoes{
 
 class Blockchain{
     friend class Transaction;
-    private:
-
-    int pos = 1;
-    int prevhash = 0;
-    int minerador;
-
+    
     public:
+
+    typedef TIterator TransactionIterator;
 
     Blockchain();
 
-    void imprime();
+    void imprimeBlockchain();
 
     void criaBloco(int n, int mx, int min, transacoes *t);
+
+    void destroy(const Block *ptr);
+    void destroy();
+
+    ~Blockchain();
+
+    TransactionIterator transactionBegin() const;
+    TransactionIterator transactionEnd() const;
 
 
     Block *first = NULL;
     Block *last = NULL;
+};
+
+class TIterator {
+	friend class Blockchain;
+public:
+	TIterator(Transaction *ptr_): ptr(ptr_){}
+	Transaction &operator*() {return *ptr;}
+	const Transaction &operator*() const {return *ptr;} 
+
+	bool operator==(const TIterator &other) const;
+	bool operator!=(const TIterator &other) const;
+
+    TIterator operator++(int);
+
+	
+private:
+
+	Transaction *ptr;
 };
 
 #endif

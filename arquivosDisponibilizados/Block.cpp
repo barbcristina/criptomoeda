@@ -14,17 +14,8 @@ void Block::addTransaction(int _a, int _b, int valor1, int taxa1){
  }
 
  int Block::getHash(){
-   int j = 0;
-   Transaction *elems = inicio;
-   //conta quantas transações existem
-   while(elems){
-      elems = elems->next;
-      j++;
-   }
-   delete elems;
-
    //cria um vetor com exatamente a quantidade de elementos necessarias, varre todos os dados do bloco e chama calcula
-   int *v = new int[4+(j*4)];
+   int *v = new int[4+(size()*4)];
    int i = 3;
    v[0] = pos;
    v[1] = prevHash;
@@ -122,16 +113,8 @@ int Block::getProofWork(){
 
 //funcao para o modo verbose, responsavel por montar o array com todos os dados do meu bloco e imprimi-lo junto com o hash binario
 void Block::verbose(){
-   int j = 0;
-   Transaction *elems = inicio;
-   //conta quantas transações existem
-   while(elems){
-      elems = elems->next;
-      j++;
-   }
-   delete elems;
 
-   int *v = new int[4+(j*4)];
+   int *v = new int[4+(size()*4)];
    int i = 3;
    v[0] = pos;
    v[1] = prevHash;
@@ -157,6 +140,19 @@ void Block::verbose(){
    std::cout << std::endl;
    delete ptr;
    delete []v;
+}
+
+int Block::size(){
+   int j = 0;
+   Transaction *elems = inicio;
+   //conta quantas transações existem
+   while(elems){
+      elems = elems->next;
+      j++;
+   }
+   delete elems;
+
+   return j;
 }
 
 void Block::clear() {

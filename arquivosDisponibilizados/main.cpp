@@ -13,7 +13,7 @@ using namespace std;
 //que ninguem vai modificar a funcao de impressao)
 //O include abaixo pode ser mantido comentado quando voce for enviar a primeira parte do trabalho 
 //e tambem enquanto voce nao termina a implementacao dos iteradores (caso contrario seu programa nao compilara)
-//#include "imprimeTransacoes.h"
+#include "imprimeTransacoes.h"
 
 int main() {
 	std::string entrada;
@@ -69,11 +69,12 @@ int main() {
 	if(entrada == "operacoes"){
 		std::string operacao;
 		Blockchain b;
-		cin >> operacao;
-		
+		while(cin >> operacao){
+		if(operacao == "imprimeBlockchain"){
+			b.imprimeBlockchain();
+		}
 		if(operacao == "criarBloco"){
 			std::cin >> n >> mx >> minerador;
-			int *vec = new int[mx];
 			int maior = 0;
 			int maiorant = 0;
 			int m = 0;
@@ -84,9 +85,8 @@ int main() {
 				std::cin >> t[i].valores;
 				std::cin >> t[i].taxas;
 			}
-			b.criaBloco(n, mx, minerador, t);
-			b.imprime();
-			delete[] vec;	
+			b.criaBloco(n, mx, minerador, t);	
+			}
 		} 
 	}
 

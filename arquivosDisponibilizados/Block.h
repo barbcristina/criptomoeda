@@ -5,9 +5,8 @@
 #include <string>
 #include "Transaction.h"
 #include "Blockchain.h"
-//#include "imprimeTransacoes.h"
 
-class Transaction;
+//class Transaction;
 
 class Block{
     friend class Transaction;
@@ -24,9 +23,9 @@ class Block{
     Transaction *inicio = NULL;
     Transaction *fim = NULL;
     
-    Block(int _pos, int _prevHash, int _criador): pos(_pos), prevHash(_prevHash), criador(_criador), proofWork(0) {}
+    Block(int _pos, int _prevHash, int _criador): pos(_pos), prevHash(_prevHash), criador(_criador), proofWork(0), prox(NULL), ant(NULL) {}
 
-    Block(int _pos, int _prevHash, int _criador, int _proofWork): pos(_pos), prevHash(_prevHash), criador(_criador), proofWork(_proofWork) {}
+    Block(int _pos, int _prevHash, int _criador, int _proofWork): pos(_pos), prevHash(_prevHash), criador(_criador), proofWork(_proofWork), prox(NULL), ant(NULL) {}
 
     void addTransaction(int _a, int _b, int valor1, int taxa1);
 
@@ -37,6 +36,8 @@ class Block{
     std::string hashBinario();
 
     int getHash();
+
+    int size();
 
     int getProofWork();
 
