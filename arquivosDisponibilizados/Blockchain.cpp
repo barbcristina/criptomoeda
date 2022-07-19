@@ -2,6 +2,8 @@
 #include "Block.h"
 #include <iostream>
 #include "algorithm"
+#include "vector"
+#include "string"
 
 Blockchain::Blockchain() {}
 
@@ -43,17 +45,17 @@ void Blockchain::criaBloco(int n, int mx, int min, transacoes *t){
 
     if(first == NULL){
         Block *bloco = new Block(posicao, hashant , min);
-        for(int i = 0; i>mx ; i++)
-        bloco->addTransaction(0, 0, 0, 0);
-
+    
         bloco->minerar("quiet");
 
         first = last = bloco;
         
     }else{
         Block *bloco = new Block(posicao, hashant , min);
-        for(int i = 0; i<mx ; i++){
-        bloco->addTransaction(melhores[i].origem, melhores[i].destino, melhores[i].valores, melhores[i].taxas);
+        if(n>=mx){
+            for(int i = 0; i<mx ; i++){
+            bloco->addTransaction(melhores[i].origem, melhores[i].destino, melhores[i].valores, melhores[i].taxas);
+            }
         }
 
         bloco->minerar("quiet");
@@ -99,10 +101,128 @@ void Blockchain::imprimeBlockchain(){
                 }else{
                     std::cout << std::endl;
                     std::cout << "=====================" << std::endl;
+                    std::cout << std::endl;
                 }
             }
         }
     }
+
+void Blockchain::alteraTransacao(int posBloco, int posTransaction, int novaOrigem, int novoDestino, int novoValor, int novaTaxa){
+    Block *b = first;
+    while(b->pos != posBloco){
+        b = b->prox;
+    }
+    int posTransacao = 1;
+
+    Transaction *t = b->inicio;
+    while(posTransacao != posTransaction){
+        t = t->next;
+        posTransacao++;
+    }
+
+    t->a = novaOrigem;
+    t->b = novoDestino;
+    t->valor = novoValor;
+    t->taxa = novaTaxa;
+    b->proofWork = 0;
+
+    b->minerar("quiet");
+}
+
+void Blockchain::imprimeSaldo(int bloco){
+    std::vector<int> maiorU;
+    std::vector<int> saldo;
+
+    std::cout << "=====================" << std::endl;
+    std::cout << "Saldo apos bloco " << bloco << std::endl;
+
+    Block *b = first;
+    Transaction *t = b->inicio;
+    
+    for(int i = 1; i <= bloco; i++){
+        maiorU.push_back(b->criador);
+        
+        while(b->pos != bloco){
+            if(!b->inicio){
+	            while(b && !b->inicio && (b->pos != bloco)) 
+                    b = b->prox;
+                if(b)
+                    t = b->inicio;
+                else 
+                    t = NULL;
+            }   
+                while(t){
+                maiorU.push_back(t->a);
+                maiorU.push_back(t->b);
+                t = t->next;
+            }
+        }
+    }
+
+    int maior = 0;
+
+    for(int i = 0; i < maiorU.size(); i++){
+        if(maiorU[i] > maior)
+        maior = maiorU[i];
+    }
+    
+    b = first;
+
+    while(b->pos != bloco){
+        b = b->prox;
+    }
+
+    int recompensa = 256;
+
+    for(int i = 1; i < bloco; i++)
+    recompensa /= 2;
+
+    for(int i = 0; i <= maior; i++)
+    saldo.push_back(0);
+
+    for(int i = 0; i <= maior; i++){
+        if(i == b->criador){
+        saldo[i] += recompensa;
+        std::cout << i << " : " << saldo[b->criador] << std::endl;
+        }
+        else
+        std::cout << i << " : " << saldo[i] << std::endl;
+    }
+    std::cout << "=====================" << std::endl;
+
+}
+
+Block * Blockchain::copyBlock(const Block *ptr){
+    if(ptr==NULL) {
+		return NULL;
+	}
+    Block *bloco = new Block(ptr->pos, ptr->prevHash, ptr->criador, ptr->proofWork);
+    Transaction *ptr2 = ptr->inicio;
+    while(ptr2){
+      bloco->addTransaction(ptr2->a, ptr2->b, ptr2->valor, ptr2->taxa);
+      ptr2 = ptr2->next;
+   }
+
+
+   bloco->prox = copyBlock(ptr->prox);
+
+   return bloco;
+}
+
+Blockchain & Blockchain::operator=(const Blockchain &other) {
+	if(this==&other) 
+    return *this; 
+    destroy();
+
+    first = copyBlock(other.first);
+    last = other.last;
+   
+    return *this;
+}
+
+Blockchain::Blockchain(const Blockchain &other) {
+	*this = other;
+}
 
 void Blockchain::destroy(const Block *ptr){
     if(ptr==NULL) return;
@@ -120,8 +240,25 @@ Blockchain::~Blockchain(){
 
 TIterator TIterator::operator++(int) {
     TIterator old = *this;
-	ptr = ptr->next;
-	return old;
+    if(!ptr->next){
+        if(b && !b->prox->inicio){
+            b = b->prox;
+	        while(b && !b->inicio)
+                b = b->prox;
+                if(b)
+                ptr = b->inicio;
+                else 
+                ptr = NULL;
+        }
+        else{
+            b = b->prox;
+            ptr = b->inicio;
+        }
+    }
+    else{
+        ptr = ptr->next;
+        }
+	    return old;
 }
 
 bool TIterator::operator==(const TIterator &other) const{
@@ -133,9 +270,19 @@ bool TIterator::operator!=(const TIterator &other) const {
     }
 
 Blockchain::TransactionIterator Blockchain::transactionBegin() const {
-    return TransactionIterator(first->inicio);
+    Block *b = first;
+    Transaction *ptr = first->inicio;
+    if(!b->inicio){
+	    while(b && !b->inicio) 
+        b = b->prox;
+        if(b)
+        ptr = b->inicio;
+        else 
+        ptr = NULL;
+    }
+    return TransactionIterator(ptr, b);
 }
 
 Blockchain::TransactionIterator Blockchain::transactionEnd() const {
-    return TransactionIterator(NULL);
+    return TransactionIterator(NULL, first);
 }

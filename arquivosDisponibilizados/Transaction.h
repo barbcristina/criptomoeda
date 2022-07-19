@@ -16,7 +16,7 @@ class Transaction{
     
     public:
 
-    Transaction(const int origem, const int destino, const int _valor, const int _taxa): a(origem), b(destino), valor(_valor), taxa(_taxa), next(NULL) {}
+    Transaction(int origem, int destino, int _valor, int _taxa): a(origem), b(destino), valor(_valor), taxa(_taxa), next(NULL) {}
 
     void imprime();
 

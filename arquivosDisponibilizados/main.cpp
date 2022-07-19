@@ -72,8 +72,22 @@ int main() {
 		while(cin >> operacao){
 		if(operacao == "imprimeBlockchain"){
 			b.imprimeBlockchain();
+			Blockchain c = b;
 		}
-		if(operacao == "criarBloco"){
+		else if(operacao == "imprimeTransacoes"){
+			imprimeTransacoes(b);
+		}
+		else if(operacao == "alteraTransacao"){
+			int bloco, transacao, dados1, dados2, dados3, dados4;
+			std::cin >> bloco >> transacao >> dados1 >> dados2 >> dados3 >> dados4;
+			b.alteraTransacao(bloco, transacao, dados1, dados2, dados3, dados4);
+		}
+		else if(operacao == "imprimeSaldo"){
+			int B;
+			std::cin >> B;
+			b.imprimeSaldo(B);
+		}
+		else if(operacao == "criarBloco"){
 			std::cin >> n >> mx >> minerador;
 			int maior = 0;
 			int maiorant = 0;

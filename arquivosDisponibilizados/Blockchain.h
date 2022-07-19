@@ -18,6 +18,7 @@ struct transacoes{
 
 class Blockchain{
     friend class Transaction;
+    friend class TIterator;
     
     public:
 
@@ -27,7 +28,17 @@ class Blockchain{
 
     void imprimeBlockchain();
 
+    void alteraTransacao(int posBloco, int posTransaction, int novaOrigem, int novoDestino, int novoValor, int novaTaxa);
+
+    void imprimeSaldo(int bloco);
+
     void criaBloco(int n, int mx, int min, transacoes *t);
+
+    Blockchain(const Blockchain &);
+
+	Blockchain & operator=(const Blockchain &other);
+
+    Block * copyBlock(const Block *ptr);
 
     void destroy(const Block *ptr);
     void destroy();
@@ -45,7 +56,7 @@ class Blockchain{
 class TIterator {
 	friend class Blockchain;
 public:
-	TIterator(Transaction *ptr_): ptr(ptr_){}
+	TIterator(Transaction *ptr_, Block *b_): ptr(ptr_), b(b_) {}
 	Transaction &operator*() {return *ptr;}
 	const Transaction &operator*() const {return *ptr;} 
 
@@ -56,8 +67,8 @@ public:
 
 	
 private:
-
 	Transaction *ptr;
+    Block *b;
 };
 
 #endif
