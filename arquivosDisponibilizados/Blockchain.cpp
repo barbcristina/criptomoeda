@@ -6,11 +6,11 @@
 
 Blockchain::Blockchain() {}
 
-void Blockchain::criaBloco(int n, int mx, int min, transacoes *t){
+void Blockchain::criaBloco(transacoes *t, int n, int mx, int min){
 	transacoes melhores[mx];
 
     for(int i = 0; i < mx; i++){
-		int maior = 0;
+		int maior = -1;
 		int pos = 0;
 
 		for(int j = 0; j < n; j++){
@@ -64,7 +64,6 @@ void Blockchain::criaBloco(int n, int mx, int min, transacoes *t){
         last = last->prox;
     }
 }
-
 void Blockchain::imprimeBlockchain(){
         if(first == NULL){
             std::cout << "=====================" << std::endl;
@@ -79,7 +78,7 @@ void Blockchain::imprimeBlockchain(){
                 std::cout << "Pos: " << ptr->pos << std::endl;
                 std::cout << "Prev hash: " << ptr->prevHash << std::endl;
                 std::cout << "Criador: " << ptr->criador << std::endl;
-                std::cout << "Transacoes: " << std::endl;
+                std::cout << "Transacoes:" << std::endl;
                 if(ptr->inicio != NULL){
                     Transaction *t = ptr->inicio;
                     if(first != NULL){
@@ -138,30 +137,40 @@ void Blockchain::imprimeSaldo(int bloco){
     Block *b = first;
     Transaction *t = b->inicio;
     
-    for(int i = 1; i <= bloco; i++){
+    while(b->pos <= bloco){
+        t = b->inicio;
         maiorU.push_back(b->criador);
-        
-        while(b->pos != bloco){
             if(!b->inicio){
-	            while(b && !b->inicio && (b->pos != bloco)) 
+	            while(b && !b->inicio && (b->pos != bloco))
                     b = b->prox;
+                    maiorU.push_back(b->criador);
                 if(b)
                     t = b->inicio;
                 else 
                     t = NULL;
-            }   
-                while(t){
-                maiorU.push_back(t->a);
-                maiorU.push_back(t->b);
-                t = t->next;
-            }
+                if(t){
+                    while(t){
+                    maiorU.push_back(t->a);
+                    maiorU.push_back(t->b);
+                    t = t->next;
+                    }
+                }
+                b = b->prox;
+            }else{
+                    while(t){
+                    maiorU.push_back(t->a);
+                    maiorU.push_back(t->b);
+                    t = t->next;
+                    }
+                    if(b->prox)
+                    b = b->prox;
+                    else break;
+                }
         }
-    }
 
     int maior = 0;
 
     for(int i = 0; i < maiorU.size(); i++){
-        std::cout << maiorU[i] << std::endl;
         if(maiorU[i] > maior)
         maior = maiorU[i];
     }

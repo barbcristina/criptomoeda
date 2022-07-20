@@ -32,7 +32,9 @@ class Blockchain{
 
     void imprimeSaldo(int bloco);
 
-    void criaBloco(int n, int mx, int min, transacoes *t);
+    //void mergeTransactions(transacoes *t, int p, int q, int r);
+
+    void criaBloco(transacoes *t, int n, int mx, int min);
 
     Blockchain(const Blockchain &);
 
