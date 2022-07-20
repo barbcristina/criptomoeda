@@ -3,7 +3,6 @@
 #include <iostream>
 #include "algorithm"
 #include "vector"
-#include "string"
 
 Blockchain::Blockchain() {}
 
@@ -162,30 +161,45 @@ void Blockchain::imprimeSaldo(int bloco){
     int maior = 0;
 
     for(int i = 0; i < maiorU.size(); i++){
+        std::cout << maiorU[i] << std::endl;
         if(maiorU[i] > maior)
         maior = maiorU[i];
     }
-    
+
+    saldo.resize(maior+1);
+
     b = first;
 
-    while(b->pos != bloco){
+    int j = 1;
+
+    while(b->pos <= bloco){
+
+        int recompensa = 256;
+
+        for(int i = 1; i < j; i++)
+        recompensa /= 2;
+        j++;
+
+        saldo[b->criador] += recompensa;
+
+        Transaction *ptr = b->inicio;
+        if(ptr){
+            while(ptr){
+                saldo[ptr->a] -= ptr->valor;
+                saldo[ptr->b] += ptr->valor;
+                saldo[b->criador] += ptr->taxa;
+                saldo[ptr->a] -= ptr->taxa;
+                ptr = ptr->next;
+            }
+        }
+
+        if(b->prox)
         b = b->prox;
+        else break;
     }
 
-    int recompensa = 256;
 
-    for(int i = 1; i < bloco; i++)
-    recompensa /= 2;
-
-    for(int i = 0; i <= maior; i++)
-    saldo.push_back(0);
-
-    for(int i = 0; i <= maior; i++){
-        if(i == b->criador){
-        saldo[i] += recompensa;
-        std::cout << i << " : " << saldo[b->criador] << std::endl;
-        }
-        else
+    for(int i = 0; i < saldo.size(); i++){
         std::cout << i << " : " << saldo[i] << std::endl;
     }
     std::cout << "=====================" << std::endl;
