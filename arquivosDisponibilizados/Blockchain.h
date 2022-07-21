@@ -32,7 +32,11 @@ class Blockchain{
 
     void imprimeSaldo(int bloco);
 
-    //void mergeTransactions(transacoes *t, int p, int q, int r);
+    void ordenaTransacoes(transacoes *t, int n);
+
+    void mergeTransacoes(transacoes *t, int comeco, int meio, int fim, transacoes *aux);
+
+    void mergeSortTransacoes(transacoes *t, int comeco, int fim, transacoes *aux);
 
     void criaBloco(transacoes *t, int n, int mx, int min);
 
@@ -58,7 +62,9 @@ class Blockchain{
 class TIterator {
 	friend class Blockchain;
 public:
+    //construtor que recebe um ponteiro pra uma transação e outro para um bloco
 	TIterator(Transaction *ptr_, Block *b_): ptr(ptr_), b(b_) {}
+    //retorna o conteudo das transações
 	Transaction &operator*() {return *ptr;}
 	const Transaction &operator*() const {return *ptr;} 
 

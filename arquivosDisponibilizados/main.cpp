@@ -35,6 +35,7 @@ int main() {
 			bloco.addTransaction(a, b, valor, taxa);
 		}
 
+		//testa o construtor de copia 
 		Block c = bloco;
 		
 		std::cout << bloco.getHash() << std::endl;
@@ -68,7 +69,9 @@ int main() {
 
 	if(entrada == "operacoes"){
 		std::string operacao;
+		//cria uma nova blockchain
 		Blockchain b;
+		//while para podermos realizazr varias operações
 		while(cin >> operacao){
 		if(operacao == "imprimeBlockchain"){
 			b.imprimeBlockchain();
@@ -78,6 +81,8 @@ int main() {
 			imprimeTransacoes(b);
 		}
 		else if(operacao == "alteraTransacao"){
+			//é pedido a posição do bloco e a posução da transação que será alterada
+			//e pede os 4 dados das transações
 			int bloco, transacao, dados1, dados2, dados3, dados4;
 			std::cin >> bloco >> transacao >> dados1 >> dados2 >> dados3 >> dados4;
 			b.alteraTransacao(bloco, transacao, dados1, dados2, dados3, dados4);
@@ -85,13 +90,13 @@ int main() {
 		else if(operacao == "imprimeSaldo"){
 			int B;
 			std::cin >> B;
+			//simula todas as transações e recompensas de todos usuarios até o bloco B
 			b.imprimeSaldo(B);
 		}
 		else if(operacao == "criarBloco"){
+			// n = numero de transacoes, mx = numero maximo de transacoes por bloco
 			std::cin >> n >> mx >> minerador;
-			int maior = 0;
-			int maiorant = 0;
-			int m = 0;
+			//struct que armazena as transacoes
 			transacoes t[n];
 			for(int i = 0; i<n; i++){
 				std::cin >> t[i].origem;
