@@ -35,11 +35,11 @@ class Block{
 
     std::string hashBinario();
 
-    int getHash();
+    int getHash() const;
 
-    int size();
+    int size() const;
 
-    int getProofWork();
+    int getProofWork() const;
 
     void verbose();
 

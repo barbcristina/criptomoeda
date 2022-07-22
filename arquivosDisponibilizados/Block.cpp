@@ -13,7 +13,7 @@ void Block::addTransaction(int _a, int _b, int valor1, int taxa1){
     }
  }
 
- int Block::getHash(){
+ int Block::getHash() const{
    //cria um vetor com exatamente a quantidade de elementos necessarias, varre todos os dados do bloco e chama calcula
    int *v = new int[4+(size()*4)];
    int i = 3;
@@ -107,7 +107,7 @@ void Block::minerar(std::string tipo){
       verbose();
 }
 
-int Block::getProofWork(){
+int Block::getProofWork() const{
    return proofWork;
 }
 
@@ -142,7 +142,7 @@ void Block::verbose(){
    delete []v;
 }
 
-int Block::size(){
+int Block::size() const{
    int j = 0;
    Transaction *elems = inicio;
    //conta quantas transações existem
@@ -166,13 +166,11 @@ Block & Block::operator=(const Block &other) {
    destroy();
 	clear();
 
-   pos = other.pos;
-   prevHash = other.prevHash;
-   criador = other.criador;
-   proofWork = other.proofWork;
+   Block *bloco = new Block(other.pos, other.prevHash, other.criador, other.proofWork);
+
    Transaction *ptr = other.inicio;
    while(ptr){
-      addTransaction(ptr->a, ptr->b, ptr->valor, ptr->taxa);
+      bloco->addTransaction(ptr->a, ptr->b, ptr->valor, ptr->taxa);
       ptr = ptr->next;
    }
    return *this;

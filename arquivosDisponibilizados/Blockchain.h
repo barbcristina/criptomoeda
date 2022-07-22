@@ -26,11 +26,11 @@ class Blockchain{
 
     Blockchain();
 
-    void imprimeBlockchain();
+    void imprimeBlockchain() const;
 
     void alteraTransacao(int posBloco, int posTransaction, int novaOrigem, int novoDestino, int novoValor, int novaTaxa);
 
-    void imprimeSaldo(int bloco);
+    void imprimeSaldo(int bloco) const;
 
     void ordenaTransacoes(transacoes *t, int n);
 

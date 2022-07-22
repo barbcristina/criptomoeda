@@ -6,41 +6,30 @@
 Blockchain::Blockchain() {}
 
 void Blockchain::criaBloco(transacoes *t, int n, int mx, int min){
-	transacoes melhores[mx];
-
-    for(int i = 0; i < mx; i++){
-		int maior = -1;
-		int pos = 0;
-
-		for(int j = 0; j < n; j++){
-			if(t[j].taxas > maior){
-				maior = t[j].taxas;
-				pos = j;
-				}
-			}
-	
-			melhores[i] = t[pos];
-			t[pos].taxas = -1;
-		}
+    //chama o merge sort para ordenar as transações em ordem decrescente
+	ordenaTransacoes(t, n);
 
 ////////////////////////////////////////////////////////////
+
+    //calculamos o prevHesh que servirá como parametro para a criação de um novo bloco
     int posicao = 1;
     int hashant;
-    if(first == NULL){
+    if(first == NULL){ //caso nao tenha nenhum bloco na nossa blockchain, atibuimos o primeiro com posicao 1 e prevHesh 0
         posicao = 1;
         hashant = 0;
-    }else{
+    }else{  //caso contrario, calculamos a posicao que será atribuida ao bloco sendo criado
         Block *b = first;
         while(b){
             posicao++;
             if(b->prox == NULL){
-                hashant = b->getHash();
+                hashant = b->getHash(); //e calculamos o hash do bloco anterior
             }
             b = b->prox;
         }
 
     }
 
+    //se não existe nenhum bloco na minha lista, crio um bloco, minero esse bloco e ele será o primeiro e ultimo da minha lista
     if(first == NULL){
         Block *bloco = new Block(posicao, hashant , min);
     
@@ -48,11 +37,11 @@ void Blockchain::criaBloco(transacoes *t, int n, int mx, int min){
 
         first = last = bloco;
         
-    }else{
+    }else{  //caso contrario criamos esses blocos, adicionamos as transações, mineramos e damos um "push back" para o fim da lista
         Block *bloco = new Block(posicao, hashant , min);
-        if(n>=mx){
+        if(n!=0 && mx!=0){
             for(int i = 0; i<mx ; i++){
-            bloco->addTransaction(melhores[i].origem, melhores[i].destino, melhores[i].valores, melhores[i].taxas);
+            bloco->addTransaction(t[i].origem, t[i].destino, t[i].valores, t[i].taxas);
             }
         }
 
@@ -117,7 +106,8 @@ void Blockchain::mergeTransacoes(transacoes *t, int comeco, int meio, int fim, t
     t[comeco+k] = aux[k];
 }
 
-void Blockchain::imprimeBlockchain(){
+//percorre todos os bloco e todas as transações, imprimindo-as
+void Blockchain::imprimeBlockchain() const {
         if(first == NULL){
             std::cout << "=====================" << std::endl;
             std::cout << std::endl;
@@ -182,7 +172,7 @@ void Blockchain::alteraTransacao(int posBloco, int posTransaction, int novaOrige
     b->minerar("quiet");
 }
 
-void Blockchain::imprimeSaldo(int bloco){
+void Blockchain::imprimeSaldo(int bloco) const{
     //vetor que armazena todos usuarios do bloco 1 até B e vetor para armazenar saldo
     std::vector<int> maiorU;
     std::vector<int> saldo;
@@ -311,8 +301,8 @@ Blockchain & Blockchain::operator=(const Blockchain &other) {
     return *this; 
     destroy();
 
-    first = copyBlock(other.first);
-    last = other.last;
+    this->first = copyBlock(other.first);
+    this->last = other.last;
    
     return *this;
 }

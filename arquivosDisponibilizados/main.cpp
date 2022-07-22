@@ -24,7 +24,7 @@ int main() {
 	if(entrada == "validarBloco"){
 		//entradas para criaçao do bloco
 		cin >> pos >> prevHash >> criador >> proofWork;
-		Block bloco(pos,prevHash,criador, proofWork);
+		Block *bloco = new Block(pos,prevHash,criador, proofWork);
 		//numero de linhas com dados de transacoes
 		std::cin >> n;
 		//para criacao do vetor
@@ -32,18 +32,20 @@ int main() {
 		//cin para dados das transacoes
 		for(int i = 0; i < n; i++){
 			std::cin >> a >> b >> valor >> taxa;
-			bloco.addTransaction(a, b, valor, taxa);
+			bloco->addTransaction(a, b, valor, taxa);
 		}
 
 		//testa o construtor de copia 
-		Block c = bloco;
+		Block *c = bloco;
 		
-		std::cout << bloco.getHash() << std::endl;
-		std::cout << bloco.hashBinario() << std::endl;
-		if(bloco.validaBloco() == true)
+		std::cout << bloco->getHash() << std::endl;
+		std::cout << bloco->hashBinario() << std::endl;
+		if(bloco->validaBloco() == true)
 		std::cout << "OK" << std::endl;
 		else 
 		std::cout << "Nao minerado" << std::endl;
+
+		delete bloco;
 
 	}
 
@@ -52,19 +54,21 @@ int main() {
 		std::cin >> modo;
 
 			std::cin >> pos >> prevHash >> criador;
-			Block bloco(pos,prevHash,criador);
+			Block *bloco = new Block(pos,prevHash,criador);
 
 			std::cin >> n;
 
 			for(int i = 0; i < n; i++){
 			std::cin >> a >> b >> valor >> taxa;
-			bloco.addTransaction(a, b, valor, taxa);
+			bloco->addTransaction(a, b, valor, taxa);
 		}
 
-		bloco.minerar(modo);
-		std::cout << bloco.getProofWork() << std::endl;
-		std::cout << bloco.getHash() << std::endl;
-		std::cout << bloco.hashBinario() << std::endl;
+		bloco->minerar(modo);
+		std::cout << bloco->getProofWork() << std::endl;
+		std::cout << bloco->getHash() << std::endl;
+		std::cout << bloco->hashBinario() << std::endl;
+
+		delete bloco;
 	}
 
 	if(entrada == "operacoes"){
