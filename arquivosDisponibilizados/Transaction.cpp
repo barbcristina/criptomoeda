@@ -3,5 +3,5 @@
 #include <iostream>
 
 void Transaction::imprime(){
-    std::cout << a << " -> " << b << " (valor: " << valor << " , " << "taxa: " << taxa << ")" << std::endl;
+    std::cout << from << " -> " << to << " (valor: " << valor << " , " << "taxa: " << taxa << ")" << std::endl;
 }

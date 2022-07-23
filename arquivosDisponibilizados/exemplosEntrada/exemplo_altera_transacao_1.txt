@@ -8,12 +8,6 @@ criarBloco 3 2 4
 1 2 10 2
 1 2 15 3
 5 1 11 4
-criarBloco 1 1 1
-5 1 215 0
-criarBloco 1 1 1
-1 7 10 0
 imprimeBlockchain
-imprimeSaldo 1
-imprimeSaldo 2
-imprimeSaldo 4
-imprimeSaldo 5
+alteraTransacao 2 2 5 2 11 2
+imprimeBlockchain

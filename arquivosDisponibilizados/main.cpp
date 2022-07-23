@@ -79,7 +79,7 @@ int main() {
 		while(cin >> operacao){
 		if(operacao == "imprimeBlockchain"){
 			b.imprimeBlockchain();
-			Blockchain c = b;
+			Blockchain c = b; //teste do construtor de copia
 		}
 		else if(operacao == "imprimeTransacoes"){
 			imprimeTransacoes(b);
@@ -101,7 +101,7 @@ int main() {
 			// n = numero de transacoes, mx = numero maximo de transacoes por bloco
 			std::cin >> n >> mx >> minerador;
 			//struct que armazena as transacoes
-			transacoes t[n];
+			dadosTransacao t[n];
 			for(int i = 0; i<n; i++){
 				std::cin >> t[i].origem;
 				std::cin >> t[i].destino;

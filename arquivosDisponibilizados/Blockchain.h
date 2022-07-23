@@ -8,7 +8,7 @@ class Block;
 class Transaction;
 class TIterator;
 
-struct transacoes{
+struct dadosTransacao{
 	int origem;
 	int destino;
 	int valores;
@@ -32,13 +32,15 @@ class Blockchain{
 
     void imprimeSaldo(int bloco) const;
 
-    void ordenaTransacoes(transacoes *t, int n);
+    void addBlocos(Block *ptr);
 
-    void mergeTransacoes(transacoes *t, int comeco, int meio, int fim, transacoes *aux);
+    void ordenaTransacoes(dadosTransacao *t, int n);
 
-    void mergeSortTransacoes(transacoes *t, int comeco, int fim, transacoes *aux);
+    void mergeTransacoes(dadosTransacao *t, int comeco, int meio, int fim, dadosTransacao *aux);
 
-    void criaBloco(transacoes *t, int n, int mx, int min);
+    void mergeSortTransacoes(dadosTransacao *t, int comeco, int fim, dadosTransacao *aux);
+
+    void criaBloco(dadosTransacao *t, int n, int mx, int min);
 
     Blockchain(const Blockchain &);
 
@@ -54,6 +56,7 @@ class Blockchain{
     TransactionIterator transactionBegin() const;
     TransactionIterator transactionEnd() const;
 
+    private:
 
     Block *first = NULL;
     Block *last = NULL;

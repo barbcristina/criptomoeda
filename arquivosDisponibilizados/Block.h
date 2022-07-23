@@ -6,22 +6,29 @@
 #include "Transaction.h"
 #include "Blockchain.h"
 
-//class Transaction;
-
 class Block{
     friend class Transaction;
     friend class Blockchain;
 
     private:
+
     int pos;
     int prevHash ;
     int criador;
     int proofWork;
 
+    void create();
+    void destroy(const Transaction *ptr);
+    void destroy();
+
+
     public:
 
     Transaction *inicio = NULL;
     Transaction *fim = NULL;
+
+    Block *prox;
+    Block *ant;
     
     Block(int _pos, int _prevHash, int _criador): pos(_pos), prevHash(_prevHash), criador(_criador), proofWork(0), prox(NULL), ant(NULL) {}
 
@@ -39,26 +46,17 @@ class Block{
 
     int size() const;
 
+    void clear();
+
     int getProofWork() const;
 
     void verbose();
-
-    void create();
 
 	Block(const Block &);
 
 	Block & operator=(const Block &other);
 
-    void clear();
-
-    void destroy(const Transaction *ptr);
-
-    void destroy();
-
     ~Block();
-
-    Block *prox;
-    Block *ant;
 
 };
 

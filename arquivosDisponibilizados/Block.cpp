@@ -22,9 +22,9 @@ void Block::addTransaction(int _a, int _b, int valor1, int taxa1){
    v[2] = criador;
    Transaction *ptr = inicio;
    while(ptr){
-      v[i] = ptr->a;
+      v[i] = ptr->from;
       i++;
-      v[i] = ptr->b;
+      v[i] = ptr->to;
       i++;
       v[i] = ptr->valor;
       i++;
@@ -121,9 +121,9 @@ void Block::verbose(){
    v[2] = criador;
    Transaction *ptr = inicio;
    while(ptr){
-      v[i] = ptr->a;
+      v[i] = ptr->from;
       i++;
-      v[i] = ptr->b;
+      v[i] = ptr->to;
       i++;
       v[i] = ptr->valor;
       i++;
@@ -166,16 +166,20 @@ Block & Block::operator=(const Block &other) {
    destroy();
 	clear();
 
-   Block *bloco = new Block(other.pos, other.prevHash, other.criador, other.proofWork);
+   pos = other.pos;
+   prevHash = other.prevHash;
+   criador = other.criador;
+   proofWork = other.proofWork;
 
    Transaction *ptr = other.inicio;
    while(ptr){
-      bloco->addTransaction(ptr->a, ptr->b, ptr->valor, ptr->taxa);
+      addTransaction(ptr->from, ptr->to, ptr->valor, ptr->taxa);
       ptr = ptr->next;
    }
    return *this;
 }
 
+//construtor
 Block::Block(const Block &other) {
 	create();
 	*this = other;

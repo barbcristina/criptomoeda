@@ -5,7 +5,7 @@
 
 Blockchain::Blockchain() {}
 
-void Blockchain::criaBloco(transacoes *t, int n, int mx, int min){
+void Blockchain::criaBloco(dadosTransacao *t, int n, int mx, int min){
     //chama o merge sort para ordenar as transações em ordem decrescente
 	ordenaTransacoes(t, n);
 
@@ -35,7 +35,7 @@ void Blockchain::criaBloco(transacoes *t, int n, int mx, int min){
     
         bloco->minerar("quiet");
 
-        first = last = bloco;
+        addBlocos(bloco);
         
     }else{  //caso contrario criamos esses blocos, adicionamos as transações, mineramos e damos um "push back" para o fim da lista
         Block *bloco = new Block(posicao, hashant , min);
@@ -47,21 +47,19 @@ void Blockchain::criaBloco(transacoes *t, int n, int mx, int min){
 
         bloco->minerar("quiet");
 
-        last->prox = bloco;
-		last->prox->ant = last;
-        last = last->prox;
+        addBlocos(bloco);
     }
 }
 
-void Blockchain::ordenaTransacoes(transacoes *t, int n){
-    transacoes *aux = new transacoes[n];
+void Blockchain::ordenaTransacoes(dadosTransacao *t, int n){
+    dadosTransacao *aux = new dadosTransacao[n];
 
     mergeSortTransacoes(t, 0, n, aux);
 
     delete[] aux;
 }
 
-void Blockchain::mergeSortTransacoes(transacoes *t, int comeco, int fim, transacoes *aux){
+void Blockchain::mergeSortTransacoes(dadosTransacao *t, int comeco, int fim, dadosTransacao *aux){
     if(comeco==fim)
     return;
     else if(comeco<fim-1){
@@ -72,7 +70,7 @@ void Blockchain::mergeSortTransacoes(transacoes *t, int comeco, int fim, transac
     }
 }
 
-void Blockchain::mergeTransacoes(transacoes *t, int comeco, int meio, int fim, transacoes *aux){
+void Blockchain::mergeTransacoes(dadosTransacao *t, int comeco, int meio, int fim, dadosTransacao *aux){
     int i = comeco;
     int j = meio;
     int k = 0;
@@ -80,27 +78,19 @@ void Blockchain::mergeTransacoes(transacoes *t, int comeco, int meio, int fim, t
     int tam = fim-comeco;
 
     while(i<meio && j<fim){
-        if(t[i].taxas >= t[j].taxas){
-            aux[k] = t[i];
-            k++;
-            i++;
+        if(t[i].taxas >= t[j].taxas){ //garante que será ordenado em ordem decrescente
+            aux[k++] = t[i++];
         }
         else{
-            aux[k] = t[j];
-            k++;
-            j++;
+            aux[k++] = t[j++];
         }
     }
 
     while(i<meio){
-        aux[k] = t[i];
-        k++;
-        i++;
+        aux[k++] = t[i++];
     }
     while(j<fim){
-        aux[k] = t[j];
-        k++;
-        j++;
+        aux[k++] = t[j++];
     }
     for(k=0; k<tam; k++)
     t[comeco+k] = aux[k];
@@ -108,25 +98,25 @@ void Blockchain::mergeTransacoes(transacoes *t, int comeco, int meio, int fim, t
 
 //percorre todos os bloco e todas as transações, imprimindo-as
 void Blockchain::imprimeBlockchain() const {
-        if(first == NULL){
+        if(first == NULL){ //caso a blockchain seja nula
             std::cout << "=====================" << std::endl;
             std::cout << std::endl;
             std::cout << "=====================" << std::endl;
         }
-        else if(first != NULL){
+        else if(first != NULL){ //caso tenha algum bloco na blockchain
             Block *ptr = first;
             std::cout << "=====================" << std::endl;
-            while(ptr){
+            while(ptr){ //imprime os dados do bloco
                 std::cout << "---------------------" << std::endl;
                 std::cout << "Pos: " << ptr->pos << std::endl;
                 std::cout << "Prev hash: " << ptr->prevHash << std::endl;
                 std::cout << "Criador: " << ptr->criador << std::endl;
                 std::cout << "Transacoes:" << std::endl;
-                if(ptr->inicio != NULL){
+                if(ptr->inicio != NULL){ //caso esse bloco tenha transações
                     Transaction *t = ptr->inicio;
                     if(first != NULL){
-                        while(t){
-                            std::cout << t->a << " -> " << t->b << " (valor: " << t->valor << " , taxa: " << t->taxa << ")" << std::endl;
+                        while(t){ //imprime as trasações
+                            std::cout << t->from << " -> " << t->to << " (valor: " << t->valor << " , taxa: " << t->taxa << ")" << std::endl;
                             t = t->next;
                         }
                     }
@@ -135,7 +125,7 @@ void Blockchain::imprimeBlockchain() const {
                 std::cout << "Hash: " << ptr->getHash() << std::endl;
                 std::cout << "---------------------" << std::endl;
                 ptr = ptr->prox;
-                if(ptr != NULL){
+                if(ptr != NULL){ //caso o bloco ao seja o ultimo, imprime a seta para indicar o proximo
                 std::cout << "          ^" << std::endl;
                 std::cout << "          |" << std::endl;
                 std::cout << "          v" << std::endl;
@@ -149,27 +139,35 @@ void Blockchain::imprimeBlockchain() const {
 
 void Blockchain::alteraTransacao(int posBloco, int posTransaction, int novaOrigem, int novoDestino, int novoValor, int novaTaxa){
     Block *b = first;
+    if(b){ //se a blockchain nao esstiver vazia
     //chego no bloco que quero alterar
-    while(b->pos != posBloco){
+    while(b && b->pos != posBloco){
         b = b->prox;
     }
     int posTransacao = 1;
 
     //chego na transação que quero alterar
-    Transaction *t = b->inicio;
-    while(posTransacao != posTransaction){
-        t = t->next;
-        posTransacao++;
-    }
+    if(b && b->inicio){
+        Transaction *t = b->inicio;
+        while(t && posTransacao != posTransaction){
+            t = t->next;
+            posTransacao++;
+        }
 
     //altero os dados e minero esse bloco
-    t->a = novaOrigem;
-    t->b = novoDestino;
-    t->valor = novoValor;
-    t->taxa = novaTaxa;
-    b->proofWork = 0;
+        if(t){
+        t->from = novaOrigem;
+        t->to = novoDestino;
+        t->valor = novoValor;
+        t->taxa = novaTaxa;
+        }
+    }
 
-    b->minerar("quiet");
+    if(b){
+        b->proofWork = 0;
+        b->minerar("quiet");
+    }
+}
 }
 
 void Blockchain::imprimeSaldo(int bloco) const{
@@ -177,10 +175,8 @@ void Blockchain::imprimeSaldo(int bloco) const{
     std::vector<int> maiorU;
     std::vector<int> saldo;
 
-    std::cout << "=====================" << std::endl;
-    std::cout << "Saldo apos bloco " << bloco << std::endl;
-
     Block *b = first;
+    if(b){ //caso minha blockchain não esteja vazia, posso seguir com a minha função
     Transaction *t = b->inicio;
     
     //enquanto a posicao de b for <= a do bloco que o usuario inseriu
@@ -202,8 +198,8 @@ void Blockchain::imprimeSaldo(int bloco) const{
                 //agora, se t for valido, temos um while que insere a origem e o destino de cada transação do bloco no vetor maiorU
                 if(t){
                     while(t){
-                        maiorU.push_back(t->a);
-                        maiorU.push_back(t->b);
+                        maiorU.push_back(t->from);
+                        maiorU.push_back(t->to);
                         t = t->next;
                     }
                 }
@@ -212,15 +208,15 @@ void Blockchain::imprimeSaldo(int bloco) const{
                     else break;
             }else{      //caso b tenha transações
                     while(t){                   //temos um while que insere a origem e o destino de cada transação do bloco no vetor maiorU
-                        maiorU.push_back(t->a);
-                        maiorU.push_back(t->b);
+                        maiorU.push_back(t->from);
+                        maiorU.push_back(t->to);
                         t = t->next;
                     }
                     if(b->prox) //depois disso, caso o proximo bloco seja valido, passamos para ele
                         b = b->prox;
                         else break;
-                }
         }
+    }
 
     int maior = 0;
 
@@ -256,11 +252,17 @@ void Blockchain::imprimeSaldo(int bloco) const{
         Transaction *ptr = b->inicio;
         if(ptr){
             while(ptr){
-                saldo[ptr->a] -= ptr->valor;
-                saldo[ptr->b] += ptr->valor;
-                saldo[b->criador] += ptr->taxa;
-                saldo[ptr->a] -= ptr->taxa;
-                ptr = ptr->next;
+                saldo[ptr->from] -= ptr->valor;
+                saldo[ptr->from] -= ptr->taxa;
+                if(saldo[ptr->from] < 0){  //garante que caso a origem não tenha saldo suficiente, a transação não será realizada 
+                    saldo[ptr->from] += ptr->valor;
+                    saldo[ptr->from] += ptr->taxa;
+                    ptr = ptr->next;
+                }else{
+                    saldo[ptr->to] += ptr->valor;
+                    saldo[b->criador] += ptr->taxa;
+                    ptr = ptr->next;
+                }
             }
         }
 
@@ -270,13 +272,15 @@ void Blockchain::imprimeSaldo(int bloco) const{
         else break;
     }
 
+    std::cout << "=====================" << std::endl;
+    std::cout << "Saldo apos bloco " << bloco << std::endl;
 
     //imprime os saldos de cada usuario
     for(int i = 0; i < saldo.size(); i++){
         std::cout << i << " : " << saldo[i] << std::endl;
     }
     std::cout << "=====================" << std::endl;
-
+    }
 }
 
 Block * Blockchain::copyBlock(const Block *ptr){
@@ -286,28 +290,46 @@ Block * Blockchain::copyBlock(const Block *ptr){
     Block *bloco = new Block(ptr->pos, ptr->prevHash, ptr->criador, ptr->proofWork);
     Transaction *ptr2 = ptr->inicio;
     while(ptr2){
-      bloco->addTransaction(ptr2->a, ptr2->b, ptr2->valor, ptr2->taxa);
+      bloco->addTransaction(ptr2->from, ptr2->to, ptr2->valor, ptr2->taxa);
       ptr2 = ptr2->next;
    }
 
+   //adiciona esse bloco copiado no fim da lista
+   addBlocos(bloco);
+
    //copia a lista de blocos usando recursividade
-   bloco->prox = copyBlock(ptr->prox);
+   copyBlock(ptr->prox);
 
    return bloco;
 }
 
+
+//insere um bloco no fim da lista
+void Blockchain::addBlocos(Block *ptr){
+    if(first==NULL) {
+		first = last = ptr;
+	} else {
+		last->prox = ptr;
+		last->prox->ant = last;
+		last = last->prox;
+	}
+}
 Blockchain & Blockchain::operator=(const Blockchain &other) {
 	if(this==&other) 
     return *this; 
     destroy();
 
-    this->first = copyBlock(other.first);
-    this->last = other.last;
+    if(!other.first){
+        first = last = NULL;
+    }else{
+        first = copyBlock(other.first);
+    }
    
     return *this;
 }
 
 Blockchain::Blockchain(const Blockchain &other) {
+    first = last = NULL;
 	*this = other;
 }
 
@@ -327,6 +349,10 @@ Blockchain::~Blockchain(){
 
 TIterator TIterator::operator++(int) {
     TIterator old = *this;
+    if(!b){ //caso a blockchain esteja vazia
+        return TIterator(NULL, NULL);
+    }
+
     if(!ptr->next){ //caso as transações de um bloco acabe
         if(b && !b->prox->inicio){ //e se o proximo bloco nao tiver transações
             b = b->prox; //pulamos para esse prox bloco
@@ -359,6 +385,9 @@ bool TIterator::operator!=(const TIterator &other) const {
 
 Blockchain::TransactionIterator Blockchain::transactionBegin() const {
     Block *b = first;
+    if(!first){
+        return transactionEnd();
+    }
     Transaction *ptr = first->inicio;
     if(!b->inicio){ //se b nao tiver transações
 	    while(b && !b->inicio) //enquanto b for valido e nao tiver transações
@@ -369,9 +398,9 @@ Blockchain::TransactionIterator Blockchain::transactionBegin() const {
         else 
         ptr = NULL;
     }
-    return TransactionIterator(ptr, b); //cria um iterador para a primeira transação da blockchain recebendo
+    return TransactionIterator(ptr, b); //cria um iterador para a primeira transação da blockchain e recebe tambem o bloco que contem a primeira transação
 }
 
 Blockchain::TransactionIterator Blockchain::transactionEnd() const {
-    return TransactionIterator(NULL, first);
+    return TransactionIterator(NULL, NULL);
 }

@@ -16,14 +16,14 @@ class Transaction{
     
     public:
 
-    Transaction(int origem, int destino, int _valor, int _taxa): a(origem), b(destino), valor(_valor), taxa(_taxa), next(NULL) {}
+    Transaction(int origem, int destino, int _valor, int _taxa): from(origem), to(destino), valor(_valor), taxa(_taxa), next(NULL) {}
 
     void imprime();
 
     private:
 
-    int a;
-    int b;
+    int from;
+    int to;
     int valor;
     int taxa;
 
